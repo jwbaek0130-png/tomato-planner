@@ -335,6 +335,15 @@ body{
 .rp-field input[type=date],.rp-field input[type=time]{
   font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
+/* iPadOS Safari (unlike iPhone Safari or any desktop browser) renders these two control
+   types at their own native intrinsic width/height and largely ignores the CSS box model
+   (width:100%, padding, border-radius) unless appearance is explicitly stripped. That's
+   why the box grows past its grid column, clips against the card edge, and the two date
+   fields visually overlap only on iPad. Turning off native chrome hands sizing back to us. */
+.rp-field input[type=date],.rp-field input[type=time]{
+  -webkit-appearance:none;
+  appearance:none;
+}
 .rp-title-input{font-size:18.1px !important;background:var(--green-1) !important;border-radius:999px !important;}
 /* iOS Safari shows nothing at all inside an empty date/time input (no placeholder,
    unlike desktop browsers), which next to a filled-in field like 시작 날짜 reads as
