@@ -280,7 +280,7 @@ body{
   font-family:inherit;font-size:18.1px;font-weight:700;color:var(--ink);
 }
 .rt-row input[type=text]{flex:1;min-width:160px;background:var(--green-1);}
-.rt-row input[type=date],.rt-row input[type=time]{font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;}
+.rt-row input[type=date],.rt-row input[type=time]{-webkit-appearance:none;appearance:none;}
 .routine-item-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:4px;}
 @media (max-width:420px){.routine-item-grid{grid-template-columns:1fr;}}
 .routine-item-row{display:flex;align-items:center;gap:6px;border:1.6px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card);cursor:pointer;min-width:0;}
@@ -326,20 +326,16 @@ body{
 .rp-grid .rp-field input{width:100%;box-sizing:border-box;}
 .rp-field label{display:block;font-size:16.9px;font-weight:700;color:var(--ink-soft);margin-bottom:4px;}
 .rp-field input[type=text],.rp-field input[type=date],.rp-field input[type=time],.rp-field select{
-  width:100%;min-width:0;box-sizing:border-box;border:2px solid var(--line);border-radius:12px;background:var(--card);
-  padding:7px 9px;font-family:inherit;font-size:16.8px;font-weight:700;color:var(--ink);
+  width:100%;min-width:0;height:41px;box-sizing:border-box;border:2px solid var(--line);border-radius:12px;background:var(--card);
+  padding:7px 9px;font-family:inherit;font-size:16.8px;font-weight:700;color:var(--ink);line-height:1.2;
 }
-/* iOS Safari renders the native date/time picker's segments using the page font;
-   Dongle's unusual glyph metrics break WebKit's fixed-width segment layout there,
-   causing the digits to overlap or get clipped. Force system font just for these two. */
-.rp-field input[type=date],.rp-field input[type=time]{
-  font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-}
-/* iPadOS Safari (unlike iPhone Safari or any desktop browser) renders these two control
-   types at their own native intrinsic width/height and largely ignores the CSS box model
-   (width:100%, padding, border-radius) unless appearance is explicitly stripped. That's
-   why the box grows past its grid column, clips against the card edge, and the two date
-   fields visually overlap only on iPad. Turning off native chrome hands sizing back to us. */
+/* iPadOS Safari (unlike iPhone Safari or any desktop browser) renders date/time inputs at
+   their own native intrinsic width/height and largely ignores the CSS box model (width:100%,
+   height, padding) unless appearance is explicitly stripped. That's why those two boxes grew
+   past their grid column, clipped against the card edge, and overlapped the neighboring field
+   -- and once native chrome takes over sizing, the value text stops following our font too.
+   Turning off native chrome hands sizing AND font back to the same rule every field above uses,
+   so all four boxes end up pixel-identical in size/font/width. */
 .rp-field input[type=date],.rp-field input[type=time]{
   -webkit-appearance:none;
   appearance:none;
