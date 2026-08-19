@@ -46,7 +46,7 @@ body{
   padding:20px 16px 60px;
 }
 #app{
-  max-width:1100px;
+  max-width:1320px;
   margin:0 auto;
   position:relative;
 }
@@ -61,7 +61,7 @@ body{
 @media (max-width:640px){.stats-row,.settings-row{grid-template-columns:1fr;}}
 
 /* ---------- calendar 2-column layout (좌측 카드 스택 + 캘린더) ---------- */
-.cal-layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:10px;align-items:start;justify-content:center;}
+.cal-layout{display:grid;grid-template-columns:215px minmax(0,1fr);gap:10px;align-items:start;justify-content:center;}
 .cal-side{min-width:0;}
 .cal-center{min-width:0;}
 @media (max-width:980px){
@@ -117,11 +117,12 @@ body{
 
 /* ---------- calendar ---------- */
 .cal-center{container-type:inline-size;container-name:calcenter;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-center>.card{padding-left:10px;padding-right:10px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .cal-dow{text-align:center;font-size:17.7px;font-weight:700;color:var(--ink-soft);padding-bottom:4px;}
 .cal-cell{
   min-height:62px;border:1.5px solid var(--line);border-radius:12px;background:var(--green-0);
-  padding:5px 6px 5px;position:relative;cursor:pointer;display:flex;flex-direction:column;
+  padding:5px 4px 5px;position:relative;cursor:pointer;display:flex;flex-direction:column;
   overflow-x:hidden;overflow-y:visible;
 }
 .cal-cell.empty{visibility:hidden;}
@@ -169,8 +170,8 @@ body{
 .progress-outer{position:relative;flex:1;min-width:0;height:20px;background:var(--cream);border:2px solid var(--line);border-radius:999px;overflow:hidden;}
 .progress-inner{height:100%;background:var(--tomato);border-radius:999px;transition:width .3s;}
 .progress-pct{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:16.9px;font-weight:900;color:var(--ink);}
-.goal-edit{display:flex;gap:3px;align-items:center;margin-top:10px;font-size:16px;font-weight:700;flex-wrap:nowrap;white-space:nowrap;}
-.goal-edit input{width:30px;padding:6px 1px;margin-right:1px;border:2px solid var(--line);border-radius:999px;font-family:inherit;font-weight:700;font-size:16.8px;text-align:center;background:var(--card);-moz-appearance:textfield;flex:0 0 auto;}
+.goal-edit{display:flex;gap:5px 3px;align-items:center;margin-top:10px;font-size:16px;font-weight:700;flex-wrap:wrap;}
+.goal-edit input{width:38px;padding:6px 1px;margin-right:1px;border:2px solid var(--line);border-radius:999px;font-family:inherit;font-weight:700;font-size:16.8px;text-align:center;background:var(--card);-moz-appearance:textfield;flex:0 0 auto;}
 .goal-edit input::-webkit-outer-spin-button,.goal-edit input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 .goal-label{flex:0 0 auto;white-space:nowrap;}
 .goal-unit{flex:0 0 auto;white-space:nowrap;margin-right:2px;}
@@ -217,41 +218,51 @@ body{
 .group-block{margin-bottom:4px;}
 .group-header{display:flex;align-items:center;gap:6px;margin:12px 0 6px;font-size:16.8px;font-weight:700;color:var(--ink-soft);}
 .group-header:first-child{margin-top:0;}
+#todoGroups .group-header{cursor:pointer;user-select:none;}
+#todoGroups .group-header:hover{color:var(--ink);}
 .group-dot{width:9px;height:9px;border-radius:50%;border:1.2px solid var(--line);flex:0 0 auto;}
 
 /* todos */
-.todo-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:6px;}
-.todo-item{display:flex;align-items:center;gap:9px;border:1.8px solid var(--line);border-radius:14px;padding:9px 11px;background:var(--card);flex:1 1 100%;min-width:0;}
+.todo-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:5px;}
+.todo-item{display:flex;align-items:center;gap:7px;border:1.6px solid var(--line);border-radius:999px;padding:5px 9px;background:var(--card);flex:1 1 100%;min-width:0;}
 .drag-handle{cursor:grab;color:var(--ink-soft);display:flex;align-items:center;flex:0 0 auto;touch-action:none;}
 .drag-handle:active{cursor:grabbing;}
 .todo-item.short{flex:1 1 calc(50% - 3px);}
 .todo-item.done{background:var(--green-0);opacity:.72;cursor:default;}
-.checkbox{width:18px;height:18px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.checkbox{width:14px;height:14px;flex:0 0 auto;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .checkbox svg{width:100%;height:100%;overflow:visible;}
 .todo-main{flex:1;min-width:0;}
-.todo-title{font-size:16px;font-weight:700;position:relative;display:inline-block;max-width:100%;}
+.todo-title{font-size:14px;font-weight:700;position:relative;display:inline-block;max-width:100%;cursor:pointer;}
 .todo-item.done .todo-title{color:var(--ink-soft);}
 .todo-item.done .todo-title::after{content:"";position:absolute;left:0;right:0;top:50%;height:1.6px;background:var(--ink-soft);transform:translateY(-50%);}
-.todo-meta{font-size:13px;color:var(--ink-soft);display:flex;gap:6px;margin-top:2px;flex-wrap:wrap;align-items:center;}
-.pill{border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-size:12.5px;font-weight:700;}
-.time-pill{border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-size:12.5px;font-weight:700;background:var(--yellow-soft);}
-.todo-del,.todo-edit{background:transparent;border:none;cursor:pointer;font-size:13px;line-height:1;padding:2px;color:var(--ink-soft);display:inline-flex;align-items:center;justify-content:center;}
+.todo-meta{font-size:11px;color:var(--ink-soft);display:flex;gap:6px;margin-top:1px;flex-wrap:wrap;align-items:center;}
+.pill{border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-size:10.5px;font-weight:700;}
+.time-pill{border:1px solid var(--line);border-radius:999px;padding:1px 7px;font-size:10.5px;font-weight:700;background:var(--yellow-soft);}
+.todo-del{background:transparent;border:none;cursor:pointer;font-size:12px;line-height:1;padding:2px;color:var(--ink-soft);display:inline-flex;align-items:center;justify-content:center;}
 .inline-edit-input{
-  flex:1;min-width:0;border:1.6px solid var(--line);border-radius:8px;padding:4px 8px;
-  font-family:inherit;font-size:15.5px;font-weight:700;background:var(--card);color:var(--ink);
+  flex:1;min-width:0;border:1.6px solid var(--line);border-radius:8px;padding:3px 7px;
+  font-family:inherit;font-size:14px;font-weight:700;background:var(--card);color:var(--ink);
 }
-.add-todo-form{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.add-todo-form input[type=text]{flex:1;min-width:140px;padding:7px 14px;border:2px solid var(--line);border-radius:999px;font-family:inherit;font-size:18px;font-weight:700;background:var(--green-1);}
-.add-todo-form select{padding:7px 10px;border:2px solid var(--line);border-radius:999px;font-family:inherit;font-size:15.5px;background:var(--card);}
-.add-todo-form .btn{padding:7px 14px;}
+.cat-add-row{display:none;gap:6px;margin-top:2px;margin-bottom:5px;align-items:center;}
+.cat-add-row.show{display:flex;}
+.cat-add-row input[type=text]{flex:1;min-width:0;padding:5px 12px;border:1.8px dashed var(--ink-soft);border-radius:999px;font-family:inherit;font-size:14px;font-weight:700;background:var(--card);color:var(--ink);}
+.cat-add-row input[type=text]:focus{outline:none;border-color:var(--line);background:var(--green-0);}
+.cat-add-submit{
+  width:24px;height:24px;border-radius:50%;border:1.8px solid var(--line);background:var(--cream);
+  color:var(--ink);font-size:14px;font-weight:900;line-height:1;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;padding:0;transition:background .15s;
+}
+.cat-add-submit:hover{background:var(--green-2);}
 .done-toggle{font-size:16.8px;color:var(--ink-soft);font-weight:700;margin:12px 0 4px;cursor:pointer;}
 
 /* ---------- categories / routines in settings ---------- */
-.cat-list{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;}
-@media (max-width:360px){.cat-list{grid-template-columns:1fr;}}
-.cat-row{display:flex;align-items:center;gap:6px;border:1.8px solid var(--line);border-radius:14px;padding:7px 8px;background:var(--card);min-width:0;}
-.cat-row input[type=text]{border:none;background:transparent;font-family:inherit;font-size:18.1px;font-weight:700;flex:1;min-width:0;color:var(--ink);}
-.swatch-dot{width:24px;height:24px;flex:0 0 auto;border:none;background:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
+.cat-list{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+@media (max-width:640px){.cat-list{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:420px){.cat-list{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:300px){.cat-list{grid-template-columns:1fr;}}
+.cat-row{display:flex;align-items:center;gap:4px;border:1.6px solid var(--line);border-radius:12px;padding:5px 6px;background:var(--card);min-width:0;}
+.cat-row input[type=text]{border:none;background:transparent;font-family:inherit;font-size:16.5px;font-weight:700;flex:1;min-width:0;color:var(--ink);}
+.swatch-dot{width:21px;height:21px;flex:0 0 auto;border:none;background:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
 .swatch-dot svg{width:100%;height:100%;}
 .add-cat-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
 .add-cat-row input[type=text]{flex:1;padding:9px 14px;border:2px solid var(--line);border-radius:999px;font-family:inherit;font-size:18.1px;font-weight:700;background:var(--green-1);}
@@ -269,11 +280,15 @@ body{
   font-family:inherit;font-size:18.1px;font-weight:700;color:var(--ink);
 }
 .rt-row input[type=text]{flex:1;min-width:160px;background:var(--green-1);}
-.routine-item-row{display:flex;align-items:center;gap:8px;border:1.8px solid var(--line);border-radius:14px;padding:9px 11px;margin-bottom:6px;background:var(--card);cursor:pointer;}
+.routine-item-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:4px;}
+@media (max-width:420px){.routine-item-grid{grid-template-columns:1fr;}}
+.routine-item-row{display:flex;align-items:center;gap:6px;border:1.6px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card);cursor:pointer;min-width:0;}
 .routine-item-main{flex:1;min-width:0;}
-.routine-item-title{font-size:18.1px;font-weight:700;}
-.routine-item-sub{font-size:16.9px;color:var(--ink-soft);margin-top:3px;display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
-.chev{color:var(--ink-soft);font-size:22.3px;}
+.routine-item-top{display:flex;align-items:baseline;gap:6px;min-width:0;}
+.routine-item-title{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.routine-item-days{font-size:13.5px;color:var(--ink-soft);font-weight:700;white-space:nowrap;flex:0 0 auto;}
+.routine-item-time{font-size:12.5px;color:var(--ink-soft);margin-top:1px;}
+.chev{color:var(--ink-soft);font-size:19px;flex:0 0 auto;}
 
 /* ---------- toggle switch ---------- */
 .switch-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 2px;}
@@ -512,11 +527,6 @@ body{
 
   <div class="card">
     <h3>오늘의 할 일</h3>
-    <div class="add-todo-form">
-      <input type="text" id="newTodoTitle" placeholder="할 일 입력 후 추가">
-      <select id="newTodoCategory"></select>
-      <button class="btn small primary" id="addTodoBtn">추가</button>
-    </div>
     <div class="routine-chip-row" id="routineChipRow"></div>
     <div id="todoGroups"></div>
   </div>
@@ -639,11 +649,11 @@ function dayMinutes(key){
 }
 function catById(id){ return data.categories.find(c=>c.id===id); }
 
-function groupByCategory(items){
+function groupByCategory(items, includeEmpty){
   const groups = data.categories.map(c=>({cat:c, items:items.filter(x=>x.categoryId===c.id)}));
   const none = items.filter(x=>!x.categoryId || !catById(x.categoryId));
-  if(none.length) groups.push({cat:null, items:none});
-  return groups.filter(g=>g.items.length>0);
+  groups.push({cat:null, items:none});
+  return includeEmpty ? groups : groups.filter(g=>g.items.length>0);
 }
 
 /* ---------- routine materialization ---------- */
@@ -709,6 +719,7 @@ let curYear, curMonth;
   curMonth = t.getMonth();
 }
 let selectedKey = todayKey();
+let openCatRows = new Set();
 let editingRoutineId = null;
 
 /* ================= NAV ================= */
@@ -1065,6 +1076,7 @@ function fillCategorySelect(sel, includeNone){
 
 function openDay(key){
   selectedKey = key;
+  openCatRows = new Set();
   ensureRoutinesForDate(key);
   save();
   renderCalendarView();
@@ -1145,14 +1157,23 @@ function renderDayPanel(){
     });
   });
 
-  fillCategorySelect(document.getElementById('newTodoCategory'), true);
   const all = sortTodos(day.todos);
-  const groups = groupByCategory(all);
-  document.getElementById('todoGroups').innerHTML = groups.map(g=>`
+  const groups = groupByCategory(all, true);
+  document.getElementById('todoGroups').innerHTML = groups.map(g=>{
+    const catId = g.cat ? g.cat.id : '';
+    const isOpen = openCatRows.has(catId);
+    return `
     <div class="group-block">
-      <div class="group-header"><span class="group-dot" style="background:${g.cat?g.cat.color:'#ddd'}"></span>${g.cat?escapeHtml(g.cat.name):'기타'}</div>
-      <ul class="todo-list">${g.items.map(todoHTML).join('')}</ul>
-    </div>`).join('');
+      <div class="group-header" data-group-toggle="${catId}">
+        <span class="group-dot" style="background:${g.cat?g.cat.color:'#ddd'}"></span>${g.cat?escapeHtml(g.cat.name):'기타'}
+      </div>
+      <div class="cat-add-row${isOpen?' show':''}" data-cat-row="${catId}">
+        <input type="text" class="cat-add-input" placeholder="추가..." data-cat-add-input="${catId}">
+        <button type="button" class="cat-add-submit" data-cat-add-btn="${catId}">+</button>
+      </div>
+      ${g.items.length ? `<ul class="todo-list">${g.items.map(todoHTML).join('')}</ul>` : ''}
+    </div>`;
+  }).join('');
   bindTodoEvents();
 }
 
@@ -1186,7 +1207,6 @@ function todoHTML(t){
         ${t.time?`<span class="time-pill">${t.time}</span>`:''}
       </div>
     </div>
-    <button class="todo-edit" data-edit="${t.id}">✎</button>
     <button class="todo-del" data-del="${t.id}">✕</button>
   </li>`;
 }
@@ -1200,11 +1220,10 @@ function bindTodoEvents(){
       save(); renderDayPanel(); renderCalendarView();
     });
   });
-  document.querySelectorAll('[data-edit]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const t = day.todos.find(x=>x.id===btn.dataset.edit);
-      const titleEl = document.querySelector(`[data-title="${btn.dataset.edit}"]`);
-      if(!t || !titleEl) return;
+  document.querySelectorAll('[data-title]').forEach(titleEl=>{
+    titleEl.addEventListener('click', ()=>{
+      const t = day.todos.find(x=>x.id===titleEl.dataset.title);
+      if(!t) return;
       const input = document.createElement('input');
       input.type='text'; input.value=t.title; input.className='inline-edit-input';
       titleEl.replaceWith(input);
@@ -1248,21 +1267,70 @@ function bindTodoEvents(){
       save(); renderDayPanel();
     });
   });
+  document.querySelectorAll('[data-group-toggle]').forEach(header=>{
+    header.addEventListener('click', ()=>{
+      const catId = header.dataset.groupToggle;
+      const row = document.querySelector(`[data-cat-row="${catId}"]`);
+      if(!row) return;
+      if(openCatRows.has(catId)){
+        openCatRows.delete(catId);
+        row.classList.remove('show');
+      } else {
+        openCatRows.add(catId);
+        row.classList.add('show');
+        const input = row.querySelector('input');
+        if(input) input.focus();
+      }
+    });
+  });
+  document.querySelectorAll('[data-cat-add-btn]').forEach(btn=>{
+    btn.addEventListener('click', ()=> submitCatAdd(btn.dataset.catAddBtn));
+  });
+  document.querySelectorAll('[data-cat-add-input]').forEach(input=>{
+    input.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){ e.preventDefault(); submitCatAdd(input.dataset.catAddInput); }
+      if(e.key==='Escape'){ closeCatAddRow(input.dataset.catAddInput); }
+    });
+  });
 }
 
-document.getElementById('addTodoBtn').addEventListener('click', addTodo);
-document.getElementById('newTodoTitle').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
-function addTodo(){
-  const input = document.getElementById('newTodoTitle');
+function closeCatAddRow(categoryId){
+  if(!openCatRows.has(categoryId)) return;
+  openCatRows.delete(categoryId);
+  renderDayPanel();
+}
+
+function submitCatAdd(categoryId){
+  const input = document.querySelector(`[data-cat-add-input="${categoryId}"]`);
+  if(!input) return;
   const title = input.value.trim();
   if(!title) return;
+  openCatRows.delete(categoryId);
+  addTodo(title, categoryId);
+}
+
+document.addEventListener('click', (e)=>{
+  if(openCatRows.size === 0) return;
+  let changed = false;
+  Array.from(openCatRows).forEach(catId=>{
+    const header = document.querySelector(`[data-group-toggle="${catId}"]`);
+    const row = document.querySelector(`[data-cat-row="${catId}"]`);
+    const inside = (row && row.contains(e.target)) || (header && header.contains(e.target));
+    if(!inside){
+      openCatRows.delete(catId);
+      changed = true;
+    }
+  });
+  if(changed) renderDayPanel();
+});
+
+function addTodo(title, categoryId){
   const day = getDay(selectedKey);
   day.todos.push({
     id: uid('t'), title,
-    categoryId: document.getElementById('newTodoCategory').value,
+    categoryId: categoryId || '',
     time:null, done:false, order: day.todos.length
   });
-  input.value='';
   save(); renderDayPanel(); renderCalendarView();
 }
 
@@ -1529,18 +1597,19 @@ function renderRoutineGroups(){
   document.getElementById('routineGroups').innerHTML = groups.length ? groups.map(g=>`
     <div class="group-block">
       <div class="group-header"><span class="group-dot" style="background:${g.cat?g.cat.color:'#ddd'}"></span>${g.cat?escapeHtml(g.cat.name):'기타'}</div>
-      ${g.items.map(r=>`
-        <div class="routine-item-row" data-r="${r.id}">
-          <div class="routine-item-main">
-            <div class="routine-item-title">${escapeHtml(r.title)}</div>
-            <div class="routine-item-sub">
-              <span>${repeatSummary(r)}</span>
-              ${r.time?`<span>· ${r.time}</span>`:''}
-              <span>· ${r.manualAdd?'간편 등록':'자동 추가'}</span>
+      <div class="routine-item-grid">
+        ${g.items.map(r=>`
+          <div class="routine-item-row" data-r="${r.id}">
+            <div class="routine-item-main">
+              <div class="routine-item-top">
+                <span class="routine-item-title">${escapeHtml(r.title)}</span>
+                <span class="routine-item-days">${repeatSummary(r)}</span>
+              </div>
+              ${r.time?`<div class="routine-item-time">${r.time}</div>`:''}
             </div>
-          </div>
-          <span class="chev">›</span>
-        </div>`).join('')}
+            <span class="chev">›</span>
+          </div>`).join('')}
+      </div>
     </div>`).join('') : '<div class="empty-msg">등록된 루틴이 없어요</div>';
   document.querySelectorAll('.routine-item-row').forEach(row=>{
     row.addEventListener('click', ()=> openRoutinePanel(row.dataset.r));
