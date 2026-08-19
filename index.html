@@ -72,6 +72,20 @@ body{
 .tabs{display:flex;align-items:center;gap:6px;background:var(--cream);border:2px solid var(--line);border-radius:999px;padding:4px;}
 .tab-btn{border:none;background:transparent;padding:8px 14px;border-radius:999px;font-family:inherit;font-weight:700;font-size:18.1px;color:var(--ink-soft);cursor:pointer;}
 .tab-btn.active{background:var(--green-2);color:var(--ink);border:2px solid var(--line);padding:6px 12px;}
+/* ---------- auth / cloud sync ---------- */
+.auth-area{display:flex;align-items:center;gap:8px;margin-right:auto;}
+.auth-btn{border:2px solid var(--line);background:var(--cream);border-radius:999px;padding:7px 14px;font-family:inherit;font-weight:700;font-size:15.5px;cursor:pointer;color:var(--ink);display:flex;align-items:center;gap:6px;}
+.auth-btn:hover{background:var(--green-2);}
+.auth-btn svg{flex:0 0 auto;}
+.user-chip{display:flex;align-items:center;gap:6px;background:var(--cream);border:2px solid var(--line);border-radius:999px;padding:4px 6px 4px 4px;}
+.user-avatar{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);object-fit:cover;background:var(--ivory);}
+.user-avatar.no-photo{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;}
+.user-name{font-size:14.5px;font-weight:700;color:var(--ink);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.logout-btn{border:none;background:transparent;cursor:pointer;font-size:13px;color:var(--ink-soft);padding:2px 4px;font-weight:700;}
+.logout-btn:hover{color:var(--ink);}
+.sync-status{font-size:12.5px;color:var(--ink-soft);white-space:nowrap;}
+.sync-status.err{color:#b5523a;}
+@media (max-width:640px){ .auth-area{margin-right:0;} .user-name{max-width:56px;} }
 .view{display:none;}
 .view.active{display:block;}
 
@@ -335,6 +349,18 @@ body{
         <svg width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="14.5" r="8" fill="#ef8a5c" stroke="#2b2b28" stroke-width="1.6"/><path d="M12 2.2 L13.7 6.2 L17.8 6.7 L14.7 9.3 L15.6 13.3 L12 11.2 L8.4 13.3 L9.3 9.3 L6.2 6.7 L10.3 6.2 Z" fill="#c9d38c" stroke="#2b2b28" stroke-width="1.1" stroke-linejoin="round"/></svg>
       </span>
     </div>
+    <div class="auth-area" id="authArea">
+      <button class="auth-btn" id="loginBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.9-2.26 5.36-4.78 7.02l7.73 6c4.51-4.18 7.09-10.36 7.09-17.49z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.27-3.13.76-4.59l-7.98-6.19A23.94 23.94 0 0 0 0 24c0 3.87.92 7.53 2.56 10.78z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <span>로그인</span>
+      </button>
+      <div class="user-chip" id="userChip" style="display:none;">
+        <img class="user-avatar" id="userAvatar" alt="">
+        <span class="user-name" id="userName"></span>
+        <button class="logout-btn" id="logoutBtn" type="button" title="로그아웃">로그아웃</button>
+      </div>
+      <span class="sync-status" id="syncStatus"></span>
+    </div>
     <div class="tabs">
       <button class="tab-btn active" data-view="calendar">캘린더</button>
       <button class="tab-btn" data-view="stats">통계</button>
@@ -458,7 +484,7 @@ body{
         <input type="file" id="importFile" accept="application/json" style="display:none;">
         <button class="btn small danger" id="resetBtn">전체 초기화</button>
       </div>
-      <div class="field-note">모든 데이터는 이 기기의 브라우저(localStorage)에만 저장됩니다.</div>
+      <div class="field-note" id="storageNote">모든 데이터는 이 기기의 브라우저(localStorage)에 저장됩니다. Google로 로그인하면 Firebase에 자동으로 동기화돼요.</div>
     </div>
   </div>
 
@@ -584,7 +610,10 @@ function loadData(){
   };
 }
 let data = loadData();
-function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function save(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  if(typeof window.__tomatoCloudPush === 'function') window.__tomatoCloudPush(data);
+}
 
 function uid(prefix){ return (prefix||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
@@ -1651,6 +1680,278 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
 
 /* ================= INIT ================= */
 renderCalendarView();
+
+/* ---------- bridge for Firebase sync module (see bottom of body) ---------- */
+window.__tomatoApp = {
+  getData: ()=> data,
+  setData: (newData)=>{ data = newData; },
+  saveLocalOnly: ()=>{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); },
+  defaultCategories: defaultCategories,
+  rerenderAll: ()=>{
+    renderCalendarView();
+    if(view==='stats') renderStats();
+    if(view==='settings') renderSettings();
+  }
+};
+window.dispatchEvent(new Event('tomato-app-ready'));
+})();
+</script>
+
+<!-- ================= FIREBASE CLOUD SYNC (Google 로그인 + Realtime Database) ================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getDatabase, ref, set, get, onValue, off
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+(function(){
+"use strict";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyANGM1vdJ02i8dkKQe18owicR9F-tEHfo4",
+  authDomain: "tomato-p-9e4b5.firebaseapp.com",
+  databaseURL: "https://tomato-p-9e4b5-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  projectId: "tomato-p-9e4b5",
+  storageBucket: "tomato-p-9e4b5.firebasestorage.app",
+  messagingSenderId: "1073300163600",
+  appId: "1:1073300163600:web:a9d290171deda6f03b4e95"
+};
+
+let app = null, auth = null, db = null;
+let currentUid = null;
+let userDataRef = null;
+let saveDebounceTimer = null;
+let lastSyncedJSON = null;      // last data we sent or received, used to dedupe & break echo loops
+let suppressCloudPush = false;  // true while remote data is being applied locally
+let firebaseAvailable = false;
+
+/* ---------- small helpers to reach the existing app (classic script) ---------- */
+function withApp(fn){
+  if(window.__tomatoApp){ fn(window.__tomatoApp); return; }
+  window.addEventListener('tomato-app-ready', ()=> fn(window.__tomatoApp), {once:true});
+}
+
+function setSyncStatus(text, isError){
+  const el = document.getElementById('syncStatus');
+  if(!el) return;
+  el.textContent = text || '';
+  el.classList.toggle('err', !!isError);
+}
+
+/* ---------- normalize data coming back from Realtime Database ---------- */
+// Firebase RTDB silently drops empty arrays/objects, so anything that was
+// emptied out locally (e.g. all todos of a day deleted) can come back
+// `undefined`. Restore the shapes the app expects before handing it back.
+function normalizeRemoteData(remote, defaultCategoriesFn){
+  const d = remote && typeof remote === 'object' ? remote : {};
+  d.categories = Array.isArray(d.categories) && d.categories.length ? d.categories : defaultCategoriesFn();
+  d.routines = Array.isArray(d.routines) ? d.routines : [];
+  d.settings = (d.settings && typeof d.settings === 'object') ? d.settings : { monthlyGoalHours: 100 };
+  d.days = (d.days && typeof d.days === 'object') ? d.days : {};
+  Object.keys(d.days).forEach(k=>{
+    const day = d.days[k] || {};
+    if(!Array.isArray(day.todos)) day.todos = [];
+    if(typeof day.totalMinutes !== 'number') day.totalMinutes = day.totalMinutes || 0;
+    d.days[k] = day;
+  });
+  d.routines.forEach(r=>{
+    if(!Array.isArray(r.skips)) r.skips = [];
+    if(!r.overrides || typeof r.overrides !== 'object') r.overrides = {};
+    if(r.repeat && r.repeat.type === 'custom' && !Array.isArray(r.repeat.days)) r.repeat.days = [];
+  });
+  return d;
+}
+
+// Firebase `set()` rejects `undefined` values (JSON.stringify silently
+// strips them, `set()` does not) - round-trip through JSON to sanitize.
+function sanitizeForFirebase(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
+/* ================= FIREBASE FUNCTIONS ================= */
+function initFirebase(){
+  try{
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getDatabase(app);
+    firebaseAvailable = true;
+  }catch(err){
+    console.error('Firebase 초기화 실패:', err);
+    firebaseAvailable = false;
+    setSyncStatus('클라우드 동기화를 사용할 수 없어요', true);
+  }
+}
+
+async function loginWithGoogle(){
+  if(!firebaseAvailable) return;
+  try{
+    setSyncStatus('로그인 중...');
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  }catch(err){
+    console.error('Google 로그인 실패:', err);
+    setSyncStatus('로그인에 실패했어요', true);
+    alert('Google 로그인에 실패했어요. 잠시 후 다시 시도해주세요.');
+  }
+}
+
+async function logout(){
+  if(!firebaseAvailable) return;
+  try{
+    await signOut(auth);
+  }catch(err){
+    console.error('로그아웃 실패:', err);
+    setSyncStatus('로그아웃에 실패했어요', true);
+  }
+}
+
+function saveUserData(uid, data){
+  if(!firebaseAvailable || !uid) return;
+  clearTimeout(saveDebounceTimer);
+  saveDebounceTimer = setTimeout(async ()=>{
+    try{
+      const clean = sanitizeForFirebase(data);
+      const json = JSON.stringify(clean);
+      if(json === lastSyncedJSON) return; // nothing actually changed
+      lastSyncedJSON = json;
+      setSyncStatus('저장 중...');
+      await set(ref(db, `users/${uid}/appData`), clean);
+      setSyncStatus('동기화됨');
+    }catch(err){
+      console.error('Firebase 저장 실패:', err);
+      setSyncStatus('저장 실패 (기기에는 저장됨)', true);
+    }
+  }, 500);
+}
+
+function loadUserData(uid){
+  if(!firebaseAvailable || !uid) return Promise.resolve(null);
+  return get(ref(db, `users/${uid}/appData`))
+    .then(snap=> snap.exists() ? snap.val() : null)
+    .catch(err=>{ console.error('Firebase 불러오기 실패:', err); setSyncStatus('불러오기 실패', true); return null; });
+}
+
+function migrateLocalStorageData(uid){
+  withApp(function(bridge){
+    try{
+      const localData = bridge.getData();
+      const clean = sanitizeForFirebase(localData);
+      lastSyncedJSON = JSON.stringify(clean);
+      set(ref(db, `users/${uid}/appData`), clean)
+        .then(()=> setSyncStatus('동기화됨'))
+        .catch(err=>{ console.error('초기 이전 실패:', err); setSyncStatus('초기 동기화 실패', true); });
+    }catch(err){
+      console.error('로컬 데이터 이전 실패:', err);
+    }
+  });
+}
+
+function subscribeToUserData(uid){
+  if(!firebaseAvailable || !uid) return;
+  userDataRef = ref(db, `users/${uid}/appData`);
+  onValue(userDataRef, (snapshot)=>{
+    try{
+      if(!snapshot.exists()){
+        // 이 계정으로 첫 로그인: 기존 로컬 데이터를 Firebase로 한 번만 이전
+        migrateLocalStorageData(uid);
+        return;
+      }
+      const remote = snapshot.val();
+      const json = JSON.stringify(remote);
+      if(json === lastSyncedJSON) return; // 내가 방금 보낸 데이터가 그대로 돌아온 경우 (무한루프 방지)
+      lastSyncedJSON = json;
+      withApp(function(bridge){
+        suppressCloudPush = true;
+        const normalized = normalizeRemoteData(remote, bridge.defaultCategories);
+        bridge.setData(normalized);
+        bridge.rerenderAll();
+        bridge.saveLocalOnly();
+        suppressCloudPush = false;
+      });
+      setSyncStatus('동기화됨');
+    }catch(err){
+      console.error('실시간 동기화 처리 실패:', err);
+      setSyncStatus('동기화 오류', true);
+    }
+  }, (err)=>{
+    console.error('Firebase 구독 실패:', err);
+    setSyncStatus('동기화 연결 실패', true);
+  });
+}
+
+function unsubscribeFromUserData(){
+  if(userDataRef){ try{ off(userDataRef); }catch(e){} userDataRef = null; }
+}
+
+/* ================= UI WIRING ================= */
+function updateAuthUI(user){
+  const loginBtn = document.getElementById('loginBtn');
+  const userChip = document.getElementById('userChip');
+  const userAvatar = document.getElementById('userAvatar');
+  const userName = document.getElementById('userName');
+  if(user){
+    loginBtn.style.display = 'none';
+    userChip.style.display = 'flex';
+    userName.textContent = user.displayName || user.email || '사용자';
+    if(user.photoURL){
+      userAvatar.src = user.photoURL;
+      userAvatar.classList.remove('no-photo');
+      userAvatar.onerror = ()=>{ userAvatar.removeAttribute('src'); };
+    } else {
+      userAvatar.removeAttribute('src');
+    }
+  } else {
+    loginBtn.style.display = 'flex';
+    userChip.style.display = 'none';
+    setSyncStatus('');
+  }
+}
+
+function wireButtons(){
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(loginBtn) loginBtn.addEventListener('click', loginWithGoogle);
+  if(logoutBtn) logoutBtn.addEventListener('click', logout);
+}
+
+/* ================= INIT ================= */
+initFirebase();
+wireButtons();
+
+if(firebaseAvailable){
+  // 저장이 일어날 때마다(디바운스) Firebase로 밀어 올린다. 원격 데이터를
+  // 적용하는 동안에는(suppressCloudPush) 다시 쏘아 올리지 않는다.
+  window.__tomatoCloudPush = function(data){
+    if(!currentUid || suppressCloudPush) return;
+    saveUserData(currentUid, data);
+  };
+
+  onAuthStateChanged(auth, (user)=>{
+    try{
+      updateAuthUI(user);
+      if(user){
+        currentUid = user.uid;
+        subscribeToUserData(currentUid);
+      } else {
+        unsubscribeFromUserData();
+        currentUid = null;
+        lastSyncedJSON = null;
+        setSyncStatus('');
+      }
+    }catch(err){
+      console.error('로그인 상태 처리 실패:', err);
+    }
+  }, (err)=>{
+    console.error('인증 상태 감시 실패:', err);
+    setSyncStatus('인증 오류', true);
+  });
+} else {
+  window.__tomatoCloudPush = function(){};
+}
+
 })();
 </script>
 </body>
