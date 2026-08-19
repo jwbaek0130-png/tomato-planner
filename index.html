@@ -280,6 +280,7 @@ body{
   font-family:inherit;font-size:18.1px;font-weight:700;color:var(--ink);
 }
 .rt-row input[type=text]{flex:1;min-width:160px;background:var(--green-1);}
+.rt-row input[type=date],.rt-row input[type=time]{font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;}
 .routine-item-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:4px;}
 @media (max-width:420px){.routine-item-grid{grid-template-columns:1fr;}}
 .routine-item-row{display:flex;align-items:center;gap:6px;border:1.6px solid var(--line);border-radius:12px;padding:9px 11px;background:var(--card);cursor:pointer;min-width:0;}
@@ -327,6 +328,12 @@ body{
 .rp-field input[type=text],.rp-field input[type=date],.rp-field input[type=time],.rp-field select{
   width:100%;min-width:0;box-sizing:border-box;border:2px solid var(--line);border-radius:12px;background:var(--card);
   padding:7px 9px;font-family:inherit;font-size:16.8px;font-weight:700;color:var(--ink);
+}
+/* iOS Safari renders the native date/time picker's segments using the page font;
+   Dongle's unusual glyph metrics break WebKit's fixed-width segment layout there,
+   causing the digits to overlap or get clipped. Force system font just for these two. */
+.rp-field input[type=date],.rp-field input[type=time]{
+  font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 .rp-title-input{font-size:18.1px !important;background:var(--green-1) !important;border-radius:999px !important;}
 .rp-days{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
