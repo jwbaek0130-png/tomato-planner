@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monthly Planner</title>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Tomato Planner">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Dongle:wght@300;400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -545,16 +550,16 @@ body{
       <select id="rpCategory"></select>
     </div>
     <div class="rp-field">
+      <label>시간 (선택)</label>
+      <input type="time" id="rpTime">
+    </div>
+    <div class="rp-field">
       <label>시작 날짜</label>
       <input type="date" id="rpStart">
     </div>
     <div class="rp-field">
       <label>종료 날짜 (선택)</label>
       <input type="date" id="rpEnd">
-    </div>
-    <div class="rp-field">
-      <label>시간 (선택)</label>
-      <input type="time" id="rpTime">
     </div>
   </div>
   <div class="rp-field">
@@ -1623,6 +1628,16 @@ document.getElementById('rpSaveBtn').addEventListener('click', ()=>{
   if(editingRoutineId){
     const r = data.routines.find(x=>x.id===editingRoutineId);
     Object.assign(r, {title, categoryId, repeat, startDate, endDate, time, manualAdd});
+    Object.keys(data.days).forEach(key=>{
+      const day = data.days[key];
+      const ov = (r.overrides && r.overrides[key]) || {};
+      day.todos.forEach(t=>{
+        if(t.routineId !== editingRoutineId) return;
+        t.title = ov.title || title;
+        t.categoryId = categoryId || '';
+        t.time = time || null;
+      });
+    });
   } else {
     data.routines.push({id:uid('r'), title, categoryId, repeat, startDate, endDate, time, manualAdd, skips:[], overrides:{}});
   }
