@@ -336,6 +336,17 @@ body{
   font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
 .rp-title-input{font-size:18.1px !important;background:var(--green-1) !important;border-radius:999px !important;}
+/* iOS Safari shows nothing at all inside an empty date/time input (no placeholder,
+   unlike desktop browsers), which next to a filled-in field like 시작 날짜 reads as
+   broken/blank. Draw our own placeholder label on top, hidden once a value is picked. */
+.rp-input-wrap{position:relative;}
+.rp-placeholder{
+  position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  font-family:inherit;font-size:15.5px;font-weight:700;color:var(--ink-soft);
+  pointer-events:none;white-space:nowrap;
+}
+.rp-input-wrap.has-value .rp-placeholder,
+.rp-input-wrap input:focus ~ .rp-placeholder{display:none;}
 .rp-days{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
 .day-toggle{border:1.8px solid var(--line);border-radius:8px;width:30px;height:29px;background:var(--card);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;padding:0;line-height:1;display:inline-flex;align-items:center;justify-content:center;}
 .day-toggle.on{background:var(--green-3);}
@@ -568,7 +579,10 @@ body{
     </div>
     <div class="rp-field">
       <label>시간 (선택)</label>
-      <input type="time" id="rpTime">
+      <div class="rp-input-wrap">
+        <input type="time" id="rpTime">
+        <span class="rp-placeholder" id="rpTimePh">시:분 선택</span>
+      </div>
     </div>
     <div class="rp-field">
       <label>시작 날짜</label>
@@ -576,7 +590,10 @@ body{
     </div>
     <div class="rp-field">
       <label>종료 날짜 (선택)</label>
-      <input type="date" id="rpEnd">
+      <div class="rp-input-wrap">
+        <input type="date" id="rpEnd">
+        <span class="rp-placeholder" id="rpEndPh">선택 안 함</span>
+      </div>
     </div>
   </div>
   <div class="rp-field">
@@ -1644,6 +1661,18 @@ function updateRpDaysVisibility(){
 }
 document.getElementById('rpType').addEventListener('change', updateRpDaysVisibility);
 
+function syncRpPlaceholder(inputId){
+  const input = document.getElementById(inputId);
+  const wrap = input && input.closest('.rp-input-wrap');
+  if(!wrap) return;
+  wrap.classList.toggle('has-value', !!input.value);
+}
+['rpTime','rpEnd'].forEach(id=>{
+  const input = document.getElementById(id);
+  input.addEventListener('input', ()=> syncRpPlaceholder(id));
+  input.addEventListener('change', ()=> syncRpPlaceholder(id));
+});
+
 function openRoutinePanel(id){
   editingRoutineId = id || null;
   const r = id ? data.routines.find(x=>x.id===id) : null;
@@ -1655,6 +1684,8 @@ function openRoutinePanel(id){
   document.getElementById('rpEnd').value = r && r.endDate ? r.endDate : '';
   document.getElementById('rpTime').value = r && r.time ? r.time : '';
   document.getElementById('rpManual').checked = !!(r && r.manualAdd);
+  syncRpPlaceholder('rpTime');
+  syncRpPlaceholder('rpEnd');
 
   let type = 'custom', days=[0,1,2,3,4,5,6];
   if(r){
